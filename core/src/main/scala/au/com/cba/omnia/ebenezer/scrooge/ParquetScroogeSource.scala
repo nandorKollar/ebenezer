@@ -21,14 +21,35 @@ import com.twitter.scalding._
 
 import com.twitter.scrooge.ThriftStruct
 
-case class ParquetScroogeSource[T <: ThriftStruct](p : String*)(
-  implicit m : Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]
+case class ParquetScroogeSource[T <: ThriftStruct](p: String*)(
+  implicit m: Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]
 ) extends FixedPathSource(p: _*)
   with TypedSink[T]
   with Mappable[T]
   with java.io.Serializable {
 
   override def hdfsScheme = ParquetScroogeSchemeSupport.parquetHdfsScheme[T]
+
+  override def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] = mode match {
+    case Local(_) => sys.error(s"Local mode is currently not supported for ${toString}")
+    case _ => super.createTap(readOrWrite)(mode)
+  }
+
+  override def converter[U >: T] =
+    TupleConverter.asSuperConverter[T, U](conv)
+
+  override def setter[U <: T] =
+    TupleSetter.asSubSetter[T, U](TupleSetter.of[T])
+}
+
+case class ParquetScroogeCombineSource[T <: ThriftStruct](p : String*)(
+  implicit m : Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]
+) extends FixedPathSource(p: _*)
+  with TypedSink[T]
+  with Mappable[T]
+  with java.io.Serializable {
+
+  override def hdfsScheme = ParquetScroogeCombineSchemeSupport.parquetHdfsScheme[T]
 
   override def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] = mode match {
     case Local(_) => sys.error(s"Local mode is currently not supported for ${toString}")

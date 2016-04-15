@@ -28,12 +28,15 @@ object ParquetScroogeSourceSpec extends ThermometerSpec with ParquetLogging { de
 ParquetSource usage
 ===================
 
-  Write to parquet                            $writeTest
-  Read from parquet                           $readTest
-  Can read and write to parquet in same job   $readWriteTest
-  Rebuild parquet with more data              $rebuildTest
-  Write to parquet large structs              $writeLargeTest
-  Read parquet with large structs             $readLargeTest
+  Write to parquet                                           $writeTest
+  Read from parquet                                          $readTest
+  Read from parquet using combine input source               $combieReadTest
+  Can read and write to parquet in same job                  $readWriteTest
+  Can read and write using combine input source              $combineReadWriteTest
+  Rebuild parquet with more data                             $rebuildTest
+  Write to parquet large structs                             $writeLargeTest
+  Read parquet with large structs                            $readLargeTest
+  Read parquet with large structs using combine input source $combineReadLargeTest
 """
 
   val data = List(
@@ -74,6 +77,11 @@ ParquetSource usage
       .map(customer => (customer.id, customer.name, customer.address, customer.age))
       .writeExecution(TypedPsv("customers.psv"))
 
+  def combineRead =
+    ParquetScroogeCombineSource[Customer]("customers")
+      .map(customer => (customer.id, customer.name, customer.address, customer.age))
+      .writeExecution(TypedPsv("customersCombine.psv"))
+
   def readTest = {
     executesOk(write.flatMap(_ => read))
 
@@ -84,10 +92,25 @@ ParquetSource usage
     )
   }
 
+  def combieReadTest = {
+    executesOk(write.flatMap(_ => combineRead))
+
+    facts(
+      "customersCombine.psv" </> "_SUCCESS"   ==> exists,
+      "customersCombine.psv" </> "part-*"     ==> lines(data.map(customer =>
+        List(customer.id, customer.name, customer.address, customer.age).mkString("|")))
+    )
+  }
+
   def readWrite =
     ParquetScroogeSource[Customer]("customers")
       .map(customerNew(_))
       .writeExecution(ParquetScroogeSource[CustomerNew]("customersNew"))
+
+  def combineReadWrite =
+    ParquetScroogeCombineSource[Customer]("customers")
+      .map(customerNew(_))
+      .writeExecution(ParquetScroogeCombineSource[CustomerNew]("customersNewCombine"))
 
   def readWriteTest = {
     executesOk(write.flatMap(_ => readWrite))
@@ -95,6 +118,15 @@ ParquetSource usage
     facts(
       "customersNew" </> "_SUCCESS"   ==> exists,
       "customersNew" </> "*.parquet"  ==> records(ParquetThermometerRecordReader[CustomerNew], data.map(customerNew(_)))
+    )
+  }
+
+  def combineReadWriteTest = {
+    executesOk(write.flatMap(_ => combineReadWrite))
+
+    facts(
+      "customersNewCombine" </> "_SUCCESS"   ==> exists,
+      "customersNewCombine" </> "*.parquet"  ==> records(ParquetThermometerRecordReader[CustomerNew], data.map(customerNew(_)))
     )
   }
 
@@ -128,12 +160,26 @@ ParquetSource usage
       .map(_.toString)
       .writeExecution(TypedPsv("large.psv"))
 
+  def combineReadLarge =
+    ParquetScroogeCombineSource[Large]("large")
+      .map(_.toString)
+      .writeExecution(TypedPsv("largeCombine.psv"))
+
   def readLargeTest = {
     executesOk(writeLarge.flatMap(_ => readLarge))
 
     facts(
       "large.psv" </> "_SUCCESS"   ==> exists,
       "large.psv" </> "part-*"     ==> lines(largeData.map(_.toString))
+    )
+  }
+
+  def combineReadLargeTest = {
+    executesOk(writeLarge.flatMap(_ => combineReadLarge))
+
+    facts(
+      "largeCombine.psv" </> "_SUCCESS"   ==> exists,
+      "largeCombine.psv" </> "part-*"     ==> lines(largeData.map(_.toString))
     )
   }
 
