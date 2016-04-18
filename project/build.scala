@@ -28,9 +28,9 @@ import au.com.cba.omnia.humbug.HumbugSBT._
 
 object build extends Build {
   val thermometerVersion   = "1.4.1-20160117233509-42defec"
-  val omnitoolVersion      = "1.12.1-20160118033143-a5ca392"
+  val omnitoolVersion      = "1.13.0-dbt" //"1.12.1-20160118033143-a5ca392"
   val humbugVersion        = "0.7.1-20160117233334-0be7ee9"
-  val beeswaxVersion       = "0.1.1-20160120052815-6bf77d2"
+  val beeswaxVersion       = "0.1.1-dbt" // "0.1.1-20160415052422-236c797-SNAPSHOT" //"0.1.1-20160120052815-6bf77d2"
 
   lazy val standardSettings =
     Defaults.coreDefaultSettings ++
@@ -105,7 +105,7 @@ object build extends Build {
             )
         )
   ).dependsOn(core % "test->test")
-  
+
   lazy val example = Project(
     id = "example",
     base = file("example"),
