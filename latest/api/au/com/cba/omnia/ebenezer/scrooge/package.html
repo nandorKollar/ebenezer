@@ -83,7 +83,7 @@
       </a>
     </span>
       
-    </li><li name="au.com.cba.omnia.ebenezer.scrooge.ParquetScroogeSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="au.com.cba.omnia.ebenezer.scrooge.ParquetScroogeSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ParquetScroogeSource[T&lt;:com.twitter.scrooge.ThriftStruct]extendsFixedPathSourcewithcom.twitter.scalding.TypedSink[T]withMappable[T]withSerializablewithProductwithSerializable"></a>
       <a id="ParquetScroogeSource[T&lt;:ThriftStruct]:ParquetScroogeSource[T]"></a>
       <h4 class="signature">
@@ -99,7 +99,11 @@
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">A scalding source to read Scrooge Thrift structs from partitioned files using parquet as the
+underlying storage format.</p><div class="fullcomment"><div class="comment cmt"><p>A scalding source to read Scrooge Thrift structs from partitioned files using parquet as the
+underlying storage format. It will ignore the partition columns and only read the thrift struct
+from the parquet file.</p><p>Use <span class="extype" name="PartitionHiveParquetScroogeSink">PartitionHiveParquetScroogeSink</span> for write.
+</p></div></div>
     </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeReadTap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="PartitionParquetScroogeReadTapextendsHfs"></a>
       <a id="PartitionParquetScroogeReadTap:PartitionParquetScroogeReadTap"></a>
@@ -119,7 +123,7 @@
       <p class="shortcomment cmt">Custom tap for reading partitioned parquet files.</p><div class="fullcomment"><div class="comment cmt"><p>Custom tap for reading partitioned parquet files.</p><p>See <a href="PartitionParquetScroogeSource.html" class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSource">PartitionParquetScroogeSource</a> for use. This will add globs for all the
 underlying partitions to the path of <code>Hfs</code>.
 </p></div></div>
-    </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="PartitionParquetScroogeSink[A,T&lt;:com.twitter.scrooge.ThriftStruct]extendsSourcewithcom.twitter.scalding.TypedSink[(A,T)]withSerializablewithProductwithSerializable"></a>
       <a id="PartitionParquetScroogeSink[A,T&lt;:ThriftStruct]:PartitionParquetScroogeSink[A,T]"></a>
       <h4 class="signature">
@@ -135,7 +139,15 @@ underlying partitions to the path of <code>Hfs</code>.
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">A scalding sink to write out Scrooge Thrift structs using parquet as underlying storage format.</p>
+      <p class="shortcomment cmt">A scalding sink to write out Scrooge Thrift structs as partitioned files using parquet as
+underlying storage format.</p><div class="fullcomment"><div class="comment cmt"><p>A scalding sink to write out Scrooge Thrift structs as partitioned files using parquet as
+underlying storage format.</p><p>It expects tuples where the first part is the partition and the second part the values to write
+out.</p><p>Unfortunately read does not work since the ParquetInputSplit is an instance of
+mapreduce.FileSplit and cascading will ignore any partitioned input splits that aren't part of
+mapred.FileSplit.
+Instead use <a href="PartitionParquetScroogeSource.html" class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSource">PartitionParquetScroogeSource</a> for read.
+</p></div><dl class="paramcmts block"><dt class="param">template</dt><dd class="cmt"><p>for the partition directory where <code>%s</code> is the placeholder for the partition
+  values e.g. <code>&quot;col1=%s/col2=%s&quot;</code></p></dd><dt class="param">path</dt><dd class="cmt"><p>the top level directory to write the partitions to</p></dd></dl></div>
     </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PartitionParquetScroogeSource[A,T&lt;:com.twitter.scrooge.ThriftStruct]extendsSourcewithMappable[T]withSerializablewithProductwithSerializable"></a>
       <a id="PartitionParquetScroogeSource[A,T&lt;:ThriftStruct]:PartitionParquetScroogeSource[A,T]"></a>

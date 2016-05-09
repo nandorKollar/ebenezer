@@ -49,7 +49,14 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A scalding sink to write out Scrooge Thrift structs using parquet as underlying storage format.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/CommBank/ebenezer/tree/896404df9dfaf450cc08fd9f2d1c7b07f015276d//core/src/main/scala/au/com/cba/omnia/ebenezer/scrooge/PartitionParquetScroogeSink.scala" target="_blank">PartitionParquetScroogeSink.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A scalding sink to write out Scrooge Thrift structs as partitioned files using parquet as
+underlying storage format.</p><p>It expects tuples where the first part is the partition and the second part the values to write
+out.</p><p>Unfortunately read does not work since the ParquetInputSplit is an instance of
+mapreduce.FileSplit and cascading will ignore any partitioned input splits that aren't part of
+mapred.FileSplit.
+Instead use <a href="PartitionParquetScroogeSource.html" class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSource">PartitionParquetScroogeSource</a> for read.
+</p></div><dl class="paramcmts block"><dt class="param">template</dt><dd class="cmt"><p>for the partition directory where <code>%s</code> is the placeholder for the partition
+  values e.g. <code>&quot;col1=%s/col2=%s&quot;</code></p></dd><dt class="param">path</dt><dd class="cmt"><p>the top level directory to write the partitions to</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/CommBank/ebenezer/tree/9694bb2a97f1020219305470869525c70bd689ba//core/src/main/scala/au/com/cba/omnia/ebenezer/scrooge/PartitionParquetScroogeSink.scala" target="_blank">PartitionParquetScroogeSink.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <span class="extype" name="com.twitter.scalding.typed.TypedSink">TypedSink</span>[(<span class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink.A">A</span>, <span class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink.T">T</span>)], <span class="extype" name="com.twitter.scalding.Source">Source</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -88,7 +95,7 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="&lt;init&gt;(template:String,path:String)(implicitm:Manifest[T],implicitvalueSet:com.twitter.scalding.TupleSetter[T],implicitpartitionSet:com.twitter.scalding.TupleSetter[A]):au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink[A,T]"></a>
       <a id="&lt;init&gt;:PartitionParquetScroogeSink[A,T]"></a>
       <h4 class="signature">
@@ -104,7 +111,8 @@
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">template</dt><dd class="cmt"><p>for the partition directory where <code>%s</code> is the placeholder for the partition
+  values e.g. <code>&quot;col1=%s/col2=%s&quot;</code></p></dd><dt class="param">path</dt><dd class="cmt"><p>the top level directory to write the partitions to</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -431,7 +439,7 @@
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">the top level directory to write the partitions to</p>
     </li><li name="com.twitter.scalding.Source#read" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="read(implicitflowDef:cascading.flow.FlowDef,implicitmode:com.twitter.scalding.Mode):cascading.pipe.Pipe"></a>
       <a id="read(FlowDef,Mode):Pipe"></a>
@@ -465,7 +473,7 @@
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink">PartitionParquetScroogeSink</a> → TypedSink</dd></dl></div>
+      <p class="shortcomment cmt">Sets the setter to flatten the values and partition parts into a cascading tuple.</p><div class="fullcomment"><div class="comment cmt"><p>Sets the setter to flatten the values and partition parts into a cascading tuple.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink">PartitionParquetScroogeSink</a> → TypedSink</dd></dl></div>
     </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink#sinkFields" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sinkFields:cascading.tuple.Fields"></a>
       <a id="sinkFields:Fields"></a>
@@ -517,7 +525,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink#template" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink#template" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="template:String"></a>
       <a id="template:String"></a>
       <h4 class="signature">
@@ -533,7 +541,9 @@
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">for the partition directory where <code>%s</code> is the placeholder for the partition
+  values e.g.</p><div class="fullcomment"><div class="comment cmt"><p>for the partition directory where <code>%s</code> is the placeholder for the partition
+  values e.g. <code>&quot;col1=%s/col2=%s&quot;</code></p></div></div>
     </li><li name="au.com.cba.omnia.ebenezer.scrooge.PartitionParquetScroogeSink#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
