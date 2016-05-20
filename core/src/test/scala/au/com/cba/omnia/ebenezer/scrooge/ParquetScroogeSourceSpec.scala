@@ -30,13 +30,14 @@ ParquetSource usage
 
   Write to parquet                                           $writeTest
   Read from parquet                                          $readTest
-  Read from parquet using combine input source               $combieReadTest
+  Read from parquet using combine input source               $combineReadTest
   Can read and write to parquet in same job                  $readWriteTest
   Can read and write using combine input source              $combineReadWriteTest
   Rebuild parquet with more data                             $rebuildTest
   Write to parquet large structs                             $writeLargeTest
   Read parquet with large structs                            $readLargeTest
   Read parquet with large structs using combine input source $combineReadLargeTest
+  This test will fail on cluster                             $readWithEmptyFolderTest
 """
 
   val data = List(
@@ -51,6 +52,8 @@ ParquetSource usage
     Customer("CUSTOMER-6", "Marge", "Springfield", 40),
     Customer("CUSTOMER-7", "Flanders", "Springfield", 55)
   )
+
+  val empty = List()
 
   def stripPrefix(prefix: String, str: String) =
     if (str.startsWith(prefix)) str.substring(prefix.length) else str
@@ -92,7 +95,7 @@ ParquetSource usage
     )
   }
 
-  def combieReadTest = {
+  def combineReadTest = {
     executesOk(write.flatMap(_ => combineRead))
 
     facts(
@@ -1187,5 +1190,29 @@ ParquetSource usage
     x._1000 = "1000"
 
     x
+  }
+
+  def writeCombine = for {
+    _ <- IterablePipe(data).writeExecution(ParquetScroogeSource[Customer]("combine_test/source=data"))
+    _ <- IterablePipe(moar).writeExecution(ParquetScroogeSource[Customer]("combine_test/source=moar"))
+    _ <- IterablePipe(empty).writeExecution(ParquetScroogeSource[Customer]("combine_test/source=empty"))
+  } yield ()
+
+  def readWtihEmptyFolder = ParquetScroogeCombineSource[Customer]("combine_test/source=*")
+    .map(customer => (customer.id, customer.name, customer.address, customer.age))
+    .writeExecution(TypedPsv("customersWithEmpty.psv"))
+
+  /**
+    * This test will fail on cluster as one of the input folder contains empty parquet file
+    */
+  def readWithEmptyFolderTest = {
+    println(dir)
+    executesOk(writeCombine.flatMap(_ => readWtihEmptyFolder))
+
+    facts(
+      "customersWithEmpty.psv" </> "_SUCCESS"   ==> exists,
+      "customersWithEmpty.psv" </> "part-*"     ==> lines((data ++ moar).map(customer =>
+        List(customer.id, customer.name, customer.address, customer.age).mkString("|")))
+    )
   }
 }

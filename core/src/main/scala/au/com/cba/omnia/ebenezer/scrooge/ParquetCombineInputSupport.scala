@@ -35,13 +35,13 @@ class DeprecatedParquetCombineInputFormat[T] extends DeprecatedParquetInputForma
   * TODO: This class can be removed for parquet 1.7+
   */
 class CombineRecordReader[V](
-                              newInputFormat: ParquetInputFormat[V],
-                              oldSplit: InputSplit,
-                              oldJobConf: JobConf,
-                              reporter: Reporter
-                            )
-  extends RecordReader[Void, Container[V]] {
-  val realReader    : ParquetRecordReader[V] = new ParquetRecordReader(newInputFormat.getReadSupport(oldJobConf), ParquetInputFormat.getFilter(oldJobConf))
+  newInputFormat: ParquetInputFormat[V],
+  oldSplit: InputSplit,
+  oldJobConf: JobConf,
+  reporter: Reporter
+) extends RecordReader[Void, Container[V]] {
+  val realReader    : ParquetRecordReader[V] =
+    new ParquetRecordReader(newInputFormat.getReadSupport(oldJobConf), ParquetInputFormat.getFilter(oldJobConf))
   val splitLen      : Long                   = oldSplit.getLength
   var valueContainer: Container[V]           = null
   var firstRecord   : Boolean                = false

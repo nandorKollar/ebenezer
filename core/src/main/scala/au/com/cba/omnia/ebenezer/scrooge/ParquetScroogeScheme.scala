@@ -48,6 +48,9 @@ object ParquetScroogeSchemeSupport {
     HadoopSchemeInstance(new ParquetScroogeScheme[T].asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
+/**
+  * experiential
+  */
 class ParquetScroogeCombineScheme[A <: ThriftStruct : Manifest] extends ParquetScroogeScheme[A] {
   override def sourceConfInit(flow: FlowProcess[JobConf], tap: Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]], conf: JobConf): Unit = {
     conf.setInputFormat(classOf[DeprecatedParquetCombineInputFormat[_]])
@@ -55,7 +58,7 @@ class ParquetScroogeCombineScheme[A <: ThriftStruct : Manifest] extends ParquetS
   }
 }
 
-object ParquetScroogeCombineSchemeSupport{
+object ParquetScroogeCombineSchemeSupport {
   def parquetHdfsScheme[T <: ThriftStruct](implicit m: Manifest[T]): cascading.scheme.Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _] =
     HadoopSchemeInstance(new ParquetScroogeCombineScheme[T].asInstanceOf[Scheme[_, _, _, _, _]])
 }
