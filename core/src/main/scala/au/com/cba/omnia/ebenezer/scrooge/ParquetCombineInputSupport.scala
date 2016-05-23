@@ -33,6 +33,12 @@ class DeprecatedParquetCombineInputFormat[T] extends DeprecatedParquetInputForma
 /**
   * TODO: This class needs to be rewrote for parquet 1.6
   * TODO: This class can be removed for parquet 1.7+
+  * Reference: https://github.com/apache/parquet-mr/blob/master/parquet-hadoop/src/main/java/org/apache/parquet/hadoop/mapred/DeprecatedParquetInputFormat.java#L40
+  *
+  * MORE: Hadoop has 2 sets of API, mapred(aka mrv1) API and mapreduce(aka mrv2) API. Cascading version we are using is
+  * based on mrv1, and the parquet version in CDH release we are using is based on mrv2. In the latest parquet release,
+  * or the beta release of cascading, they support both v1 and v2 API. All the classes here are trying to implement a
+  * wrapper to convert ParquetInputSplit(extends mrv2.FileSplit) into mrv1.FileSplit in both plan and execution stage.
   */
 class CombineRecordReader[V](
   newInputFormat: ParquetInputFormat[V],
