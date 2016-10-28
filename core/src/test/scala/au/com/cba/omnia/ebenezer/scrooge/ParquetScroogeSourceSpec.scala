@@ -23,9 +23,16 @@ import au.com.cba.omnia.thermometer.fact.PathFactoids._
 import au.com.cba.omnia.ebenezer.ParquetLogging
 import au.com.cba.omnia.ebenezer.test.{Customer, CustomerNew, Large, ParquetThermometerRecordReader}
 
-object ParquetScroogeSourceSpec extends ThermometerSpec with ParquetLogging { def is = s2"""
 
-ParquetSource usage
+object ParquetScroogeSourceSpecWithSuccessFlag extends AbstractParquetScroogeSourceSpec(true) {
+}
+
+object ParquetScroogeSourceSpecNoSuccessFlag extends AbstractParquetScroogeSourceSpec(false) {
+}
+
+abstract class AbstractParquetScroogeSourceSpec(writeSuccessFlag: Boolean) extends ThermometerSpec with ParquetLogging { def is = s2"""
+
+ParquetSource(${if(writeSuccessFlag) "with" else "without"} _SUCCESS) usage
 ===================
 
   Write to parquet                            $writeTest
@@ -59,18 +66,18 @@ ParquetSource usage
 
   def write =
     IterablePipe(data)
-      .writeExecution(ParquetScroogeSource[Customer]("customers"))
+      .writeExecution(ParquetScroogeSource[Customer](writeSuccessFlag, "customers"))
 
   def writeTest = {
     executesOk(write)
     facts(
-      "customers" </> "_SUCCESS"   ==> exists,
+      "customers" </> "_SUCCESS"   ==> (if (writeSuccessFlag) exists else missing),
       "customers" </> "*.parquet"  ==> records(ParquetThermometerRecordReader[Customer], data)
     )
   }
 
   def read =
-    ParquetScroogeSource[Customer]("customers")
+    ParquetScroogeSource[Customer](writeSuccessFlag, "customers")
       .map(customer => (customer.id, customer.name, customer.address, customer.age))
       .writeExecution(TypedPsv("customers.psv"))
 
@@ -87,44 +94,44 @@ ParquetSource usage
   def readWrite =
     ParquetScroogeSource[Customer]("customers")
       .map(customerNew(_))
-      .writeExecution(ParquetScroogeSource[CustomerNew]("customersNew"))
+      .writeExecution(ParquetScroogeSource[CustomerNew](writeSuccessFlag, "customersNew"))
 
   def readWriteTest = {
     executesOk(write.flatMap(_ => readWrite))
 
     facts(
-      "customersNew" </> "_SUCCESS"   ==> exists,
+      "customersNew" </> "_SUCCESS"   ==> (if (writeSuccessFlag) exists else missing),
       "customersNew" </> "*.parquet"  ==> records(ParquetThermometerRecordReader[CustomerNew], data.map(customerNew(_)))
     )
   }
 
   def rebuild =
     IterablePipe(data ++ moar)
-      .writeExecution(ParquetScroogeSource[Customer]("customers"))
+      .writeExecution(ParquetScroogeSource[Customer](writeSuccessFlag, "customers"))
 
   def rebuildTest = {
     executesOk(write.flatMap(_ => rebuild))
 
     facts(
-      "customers" </> "_SUCCESS"   ==> exists,
+      "customers" </> "_SUCCESS"   ==> (if (writeSuccessFlag) exists else missing),
       "customers" </> "*.parquet"  ==> records(ParquetThermometerRecordReader[Customer], data ++ moar)
     )
   }
 
   def writeLarge =
     IterablePipe(largeData)
-      .writeExecution(ParquetScroogeSource[Large]("large"))
+      .writeExecution(ParquetScroogeSource[Large](writeSuccessFlag, "large"))
 
   def writeLargeTest = {
     executesOk(writeLarge)
     facts(
-      "large" </> "_SUCCESS"   ==> exists,
+      "large" </> "_SUCCESS"   ==> (if (writeSuccessFlag) exists else missing),
       "large" </> "*.parquet"  ==> records(ParquetThermometerRecordReader[Large], largeData)
     )
   }
 
   def readLarge =
-    ParquetScroogeSource[Large]("large")
+    ParquetScroogeSource[Large](writeSuccessFlag, "large")
       .map(_.toString)
       .writeExecution(TypedPsv("large.psv"))
 
