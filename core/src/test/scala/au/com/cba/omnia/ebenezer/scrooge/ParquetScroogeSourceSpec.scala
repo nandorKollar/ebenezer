@@ -24,11 +24,9 @@ import au.com.cba.omnia.ebenezer.ParquetLogging
 import au.com.cba.omnia.ebenezer.test.{Customer, CustomerNew, Large, ParquetThermometerRecordReader}
 
 
-object ParquetScroogeSourceSpecWithSuccessFlag extends AbstractParquetScroogeSourceSpec(true) {
-}
+object ParquetScroogeSourceSpecWithSuccessFlag extends AbstractParquetScroogeSourceSpec(true)
 
-object ParquetScroogeSourceSpecNoSuccessFlag extends AbstractParquetScroogeSourceSpec(false) {
-}
+object ParquetScroogeSourceSpecNoSuccessFlag extends AbstractParquetScroogeSourceSpec(false)
 
 abstract class AbstractParquetScroogeSourceSpec(writeSuccessFlag: Boolean) extends ThermometerSpec with ParquetLogging { def is = s2"""
 

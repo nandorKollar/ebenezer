@@ -34,9 +34,7 @@ import com.twitter.scrooge.ThriftStruct
 class ParquetScroogeScheme[A <: ThriftStruct : Manifest](markSuccess: Boolean) extends ParquetValueScheme[A] {
   override def sinkConfInit(flow: FlowProcess[JobConf], tap: Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]], conf: JobConf): Unit = {
     conf.setOutputFormat(classOf[DeprecatedParquetOutputFormat[_]])
-    if (!markSuccess) {
-      conf.set("mapreduce.fileoutputcommitter.marksuccessfuljobs", "false")
-    }
+    conf.set("mapreduce.fileoutputcommitter.marksuccessfuljobs", s"$markSuccess")
     ScroogeWriteSupport.setAsParquetSupportClass[A](conf)
   }
 

@@ -53,7 +53,7 @@ case class PartitionParquetScroogeSink[A, T <: ThriftStruct](template: String, p
     new TemplatePartition(templateFields, template)
   }
 
-  val hdfsScheme = ParquetScroogeSchemeSupport.parquetHdfsScheme[T](true)
+  val hdfsScheme = ParquetScroogeSchemeSupport.parquetHdfsScheme[T](false)
   hdfsScheme.setSinkFields(Dsl.strFields(List("0")))
 
   override def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] = mode match {

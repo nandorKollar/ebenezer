@@ -72,7 +72,8 @@ PartitionParquetScrooge Source and Sink test
     executesOk(write)
 
     facts(
-      basePath </> "address=Bedrock"     </> "age=40" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 2)
+      basePath </> "address=Bedrock"     </> "age=40" </> "_SUCCESS"   ==> missing  //Explicitly asserting this to document the behaviour
+    , basePath </> "address=Bedrock"     </> "age=40" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 2)
     , basePath </> "address=Bedrock"     </> "age=39" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 1)
     , basePath </> "address=Fragglerock" </> "age=2"  </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 1)
     )
@@ -83,13 +84,14 @@ PartitionParquetScrooge Source and Sink test
     executesOk(writeWith(Customer("CUSTOMER-5", "Tom", "Fragglerock", 10)))
 
     facts(
-      basePath </> "address=Bedrock"     </> "age=40" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 2), 
+      basePath </> "address=Bedrock"     </> "age=40" </> "_SUCCESS"   ==> missing, //Explicitly asserting this to document the behaviour
+      basePath </> "address=Bedrock"     </> "age=40" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 2),
       basePath </> "address=Bedrock"     </> "age=39" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 1),
       basePath </> "address=Fragglerock" </> "age=2"  </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 1),
       basePath </> "address=Fragglerock" </> "age=10" </> "*.parquet"  ==> recordCount(ParquetThermometerRecordReader[Customer], 1)
     )
   }
-  
+
   def readTest = {
     executesOk(write.flatMap(_ => read))
 
