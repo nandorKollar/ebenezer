@@ -24,7 +24,7 @@ import com.twitter.scrooge.ThriftStruct
 
 case class PartitionParquetScroogeSource[A, T <: ThriftStruct](template: String, path: String)(
   implicit m : Manifest[T], valueConverter: TupleConverter[T], partitionConverter: TupleConverter[A]
-) extends Source 
+) extends Source
   with Mappable[T]
   with java.io.Serializable {
 
@@ -33,7 +33,7 @@ case class PartitionParquetScroogeSource[A, T <: ThriftStruct](template: String,
     new TemplatePartition(templateFields, template)
   }
 
-  val hdfsScheme = ParquetScroogeSchemeSupport.parquetHdfsScheme[T]
+  val hdfsScheme = ParquetScroogeSchemeSupport.parquetHdfsScheme[T](true)
 
   override def createTap(readOrWrite: AccessMode)(implicit mode: Mode): Tap[_, _, _] = mode match {
     case hdfsMode @ Hdfs(_, jobConf) => readOrWrite match {
@@ -44,7 +44,7 @@ case class PartitionParquetScroogeSource[A, T <: ThriftStruct](template: String,
     case Local(_) => sys.error(s"Local mode is currently not supported for ${toString}")
     case x        => sys.error(s"$x mode is currently not supported for ${toString}")
   }
-  
+
   override def converter[U >: T] =
     TupleConverter.asSuperConverter[T, U](valueConverter)
 
