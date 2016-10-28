@@ -28,8 +28,8 @@ import com.twitter.scrooge.ThriftStruct
   *
   * Use [[PartitionHiveParquetScroogeSink]] for write.
   */
-class ParquetScroogeSource[T <: ThriftStruct](p : Seq[String], markSuccess: Boolean)(
-  implicit m : Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]
+class ParquetScroogeSource[T <: ThriftStruct](p: Seq[String], markSuccess: Boolean)(
+  implicit m: Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]
 ) extends FixedPathSource(p: _*)
   with TypedSink[T]
   with Mappable[T]
@@ -51,10 +51,10 @@ class ParquetScroogeSource[T <: ThriftStruct](p : Seq[String], markSuccess: Bool
 
 object ParquetScroogeSource {
   def apply[T <: ThriftStruct](p: String*)(
-    implicit m : Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]) =
+    implicit m: Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]) =
       new ParquetScroogeSource[T](p, true)
 
   def apply[T <: ThriftStruct](markSuccess: Boolean, p: String*)(
-    implicit m : Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]) =
+    implicit m: Manifest[T], conv: TupleConverter[T], set: TupleSetter[T]) =
       new ParquetScroogeSource[T](p, markSuccess)
 }
