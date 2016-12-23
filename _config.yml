@@ -1,0 +1,4 @@
+name: ebenezer
+exclude: [Gemfile]
+markdown: kramdown
+releaseVersion: 0.23.5-20161223061239-aff6e0a
