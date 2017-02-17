@@ -44,6 +44,10 @@ class ScroogeReadSupport[A <: ThriftStruct] extends ReadSupport[A] {
 object ScroogeReadSupport {
   val thriftClass = "parquet.scrooge.read.class";
 
+  /** Configure a [[JobConf]] to use Scrooge to read Parquet.
+   *
+   * Note: This must be done before instantiating the [[Job]] object.
+   */
   def setAsParquetSupportClass[A <: ThriftStruct : Manifest](conf: JobConf) {
     ParquetInputFormat.setReadSupportClass(conf, classOf[ScroogeReadSupport[_]])
     ScroogeReadWriteSupport.setThriftClass[A](conf, thriftClass)
