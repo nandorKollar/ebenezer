@@ -27,10 +27,10 @@ import au.com.cba.omnia.uniform.assembly.UniformAssemblyPlugin._
 import au.com.cba.omnia.humbug.HumbugSBT._
 
 object build extends Build {
-  val thermometerVersion   = "1.5.9-20170312221511-f8fc7a2"
-  val omnitoolVersion      = "1.14.6-20170221081926-378a521"
-  val humbugVersion        = "0.7.7-20170221075514-a8665a9"
-  val beeswaxVersion       = "0.1.13-20170313042324-83400fd"
+  val thermometerVersion   = "1.5.10-20170501023059-67accaf"
+  val omnitoolVersion      = "1.14.7-20170501021358-bdf725d"
+  val humbugVersion        = "0.7.8-20170501020334-64f8587"
+  val beeswaxVersion       = "0.1.14-20170501025604-3e9bf2e"
 
   lazy val standardSettings =
     Defaults.coreDefaultSettings ++
