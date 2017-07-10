@@ -28,9 +28,9 @@ import au.com.cba.omnia.humbug.HumbugSBT._
 
 object build extends Build {
   val thermometerVersion   = "1.5.10-20170501023059-67accaf"
-  val omnitoolVersion      = "1.14.7-20170501021358-bdf725d"
+  val omnitoolVersion      = "1.14.9-20170710003444-8f25fcd"
   val humbugVersion        = "0.7.8-20170501020334-64f8587"
-  val beeswaxVersion       = "0.1.14-20170501025604-3e9bf2e"
+  val beeswaxVersion       = "0.1.15-20170710010323-278c3d1"
 
   lazy val standardSettings =
     Defaults.coreDefaultSettings ++
