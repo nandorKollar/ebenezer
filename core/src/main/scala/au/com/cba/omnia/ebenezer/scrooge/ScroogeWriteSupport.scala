@@ -42,7 +42,7 @@ class ScroogeWriteSupport[A <: ThriftStruct] extends WriteSupport[A] {
     val thrift = ScroogeReadWriteSupport.getThriftClass[A](config, ScroogeWriteSupport.thriftClass)
     val converter = new ScroogeStructConverter
     struct = converter.convert(thrift)
-    schema =  new ThriftSchemaConverter().convert(struct)
+    schema =  ThriftSchemaConverter.convertWithoutProjection(struct)
     val extra = new java.util.HashMap[String, String]
     extra.put("thrift.class", thrift.getName)
     extra.put("thrift.descriptor", struct.toJSON)
