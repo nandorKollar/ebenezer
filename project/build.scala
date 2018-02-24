@@ -30,7 +30,7 @@ object build extends Build {
   val thermometerVersion   = "1.6.0-20180124000127-aec09bd-cdh-513"
   val omnitoolVersion      = "1.15.0-20180124002420-8583973-cdh-513"
   val humbugVersion        = "0.8.0-20180124005627-cf7d6c4-cdh-513"
-  val beeswaxVersion       = "0.2.0-20180124040559-79287a6-cdh-513"
+  val beeswaxVersion       = "0.2.1-20180124053822-85eba7a-cdh-513"
 
   lazy val standardSettings =
     Defaults.coreDefaultSettings ++
