@@ -1,0 +1,46 @@
+target
+project/boot
+*.jar
+src/test/output
+
+.project
+*.iml
+.idea
+.idea_modules
+.cache
+.history
+.classpath
+.settings
+.DS_Store
+
+#sbt
+project/target/**/*
+project/project/target/**/*
+target/**/*
+target/*
+
+#project files
+.classpath
+.settings/
+
+#ant build 
+build.number
+
+#misc
+.cache
+
+#temp files
+*~
+*#
+.#*
+.ensime_lucene
+.ensime
+.ensime_cache
+
+project/source.scala
+derby.log
+metastore_db/*
+
+example1/src/main/resources/hive-site.xml
+example2/src/main/resources/hive-site.xml
+
