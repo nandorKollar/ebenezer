@@ -18,7 +18,7 @@ resolvers ++= Seq(
   "cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos/"
 )
 
-val uniformVersion = "2.0.1-20180301001334-91fab0e-cdh-513"
+val uniformVersion = "2.0.2-20180313062528-981b746-cdh-513"
 
 addSbtPlugin("au.com.cba.omnia" % "uniform-core"       % uniformVersion)
 
